@@ -192,10 +192,11 @@ def open_operational(
         describes the projection of the underlying file.
 
     """
-    import os
+    import io
+    # import os
     import pandas as pd
     import requests
-    import tempfile
+    # import tempfile
     import xarray as xr
     import pyproj
     import numpy as np
@@ -272,8 +273,9 @@ def open_operational(
                 continue
 
             # Windows requires delete=False to open the file a second time
-            with tempfile.NamedTemporaryFile(delete=False) as tf:
-                tf.write(r.content)
+            # with tempfile.NamedTemporaryFile(delete=False) as tf:
+            with io.Bytes(r.content) as tf:
+                # tf.write(r.content)
                 f = xr.open_dataset(tf.name, engine='cfgrib')
                 f = f.drop_vars(['latitude', 'longitude'])
                 # Coordinates are taken from NCEP NCEI OpenDAP
@@ -310,10 +312,10 @@ def open_operational(
             continue
         except Exception as e:
             raise e
-        finally:
-            # Ensure that the temporary file unlinked
-            if tf:
-                os.unlink(tf.name)
+        # finally:
+        #     # Ensure that the temporary file unlinked
+        #     if tf:
+        #         os.unlink(tf.name)
     else:
         filedate = filedate - pd.to_timedelta(failback)
         return open_operational(
