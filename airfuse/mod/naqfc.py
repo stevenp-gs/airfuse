@@ -276,7 +276,7 @@ def open_operational(
             # with tempfile.NamedTemporaryFile(delete=False) as tf:
             with io.Bytes(r.content) as tf:
                 # tf.write(r.content)
-                f = xr.open_dataset(tf.name, engine='cfgrib')
+                f = xr.open_dataset(tf, engine='cfgrib')
                 f = f.drop_vars(['latitude', 'longitude'])
                 # Coordinates are taken from NCEP NCEI OpenDAP
                 # to ensure consistency. Units are in km
